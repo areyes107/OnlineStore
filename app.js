@@ -3,6 +3,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+
+var billRoutes = require('./routes/bill.route');
+var productRoutes = require ('./routes/product.route');
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -14,6 +18,7 @@ app.use((req, res, next) => {
 	next();
 });
 
-// app.use('/onlineControl',); 
+ app.use('/bills', billRoutes); 
+ app.use ('/products', productRoutes);
 
 module.exports = app;
