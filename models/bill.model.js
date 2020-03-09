@@ -26,6 +26,6 @@ var billSchema = Schemma ({
 })
 
 autoIncrement.initialize(mongoose.connection)
-billSchema.plugin(autoIncrement.plugin, {model: 'bill', field: 'no_bill', startAt: 1})
+billSchema.plugin(autoIncrement.plugin, {model: 'bill', field: 'billNumber', startAt: 1})
 
 module.exports = mongoose.model('bill', billSchema);
