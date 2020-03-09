@@ -1,15 +1,16 @@
 'use strict'
 
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 var Schemma = mongoose.Schema;
-var autoIncrement = require('mongoose-auto-increment')
+const autoIncrement = require('mongoose-auto-increment')
 
 var billSchema = Schemma ({
+
     billNumber: Number,
     address: String,
-    date: Date, 
+    date: {type: Date, default: Date.now()}, 
     name: String,
-    total: Number,
+    total: [],
     user: [{
         type: Schemma.Types.ObjectId,
         ref: 'user', 
@@ -25,6 +26,6 @@ var billSchema = Schemma ({
 })
 
 autoIncrement.initialize(mongoose.connection)
-Schemma.plugin(autoIncrement.plugin, {model: 'bill', field: 'billNumber', startsAt: 1})
+billSchema.plugin(autoIncrement.plugin, {model: 'bill', field: 'no_bill', startAt: 1})
 
 module.exports = mongoose.model('bill', billSchema);
