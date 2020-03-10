@@ -8,7 +8,7 @@ var billSchema = Schemma ({
 
     billNumber: Number,
     address: String,
-    date: {type: Date, default: Date.now()}, 
+    date: Date, 
     name: String,
     total: [],
     user: [{
