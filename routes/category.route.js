@@ -1,3 +1,5 @@
+'use strict'
+
 var express = require('express');
 var api = express();
 var categoryController = require('../controllers/category.controller');
