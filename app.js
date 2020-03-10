@@ -7,6 +7,7 @@ var app = express();
 var billRoutes = require('./routes/bill.route');
 var productRoutes = require ('./routes/product.route');
 var categoriesRoutes = require('./routes/category.route');
+var userRoutes = require('./routes/user.route');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 
  app.use('/bills', billRoutes); 
  app.use ('/products', productRoutes);
- app.use('/categories', categoriesRoutes)
+ app.use('/categories', categoriesRoutes);
+ app.use('/users', userRoutes)
 
 module.exports = app;
