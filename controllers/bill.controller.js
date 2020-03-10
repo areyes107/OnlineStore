@@ -16,6 +16,7 @@ function createBill (req, res){
             }else{
                 bill.address = params.address; 
                 bill.name = params.name;
+                bill.date = Date.now();
 
                 bill.save((err, billCreated)=>{
                     if(err){
