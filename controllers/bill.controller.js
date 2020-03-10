@@ -2,6 +2,7 @@
 
 var Bill = require('../models/bill.model');
 var jwt = require('../services/jwt');
+var User = require('../models/user.model');
 
 function createBill (req, res){
     var params = req.body;
@@ -32,6 +33,13 @@ function createBill (req, res){
     }else{
         res.send({message: 'Debe de ingresar todos los datos de la factura'});
     }
+}
+
+function addUserToBill (req, res){
+    var billId = req.params.id;
+    var user = User();
+    
+    Bill.findById()
 }
 
 module.exports = {
