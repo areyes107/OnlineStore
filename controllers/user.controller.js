@@ -109,6 +109,50 @@ function deleteClient (req, res){
     
 }
 
+function login (req, res){
+    var params = req.body;
+
+    if(params.username || params.email){
+        if(params.password){
+            Enterprise.findOne({$or:[{username: params.username},{email: params.email}]} , (err, enterpriseFind)=>{
+                if(err){
+                    res.status(500).send({message: 'Error en el servidor'});
+
+                }else if(enterpriseFind){
+                    bcrypt.compare(params.password, enterpriseFind.password, (err, checkPassword)=>{
+                        if(err){
+                            res.status(500).send({message: ' error al comparar las contraseñas'});
+
+                        }else if(checkPassword){
+                            if(params.gettoken){
+                               res.send({token: jwt.createToken(enterpriseFind)});
+                            }
+                            else{
+                                res.send({enterprise: enterpriseFind});
+                            }
+
+                        }else{
+                            res.status(401).send({message: 'Contraseña incorrecta'});
+                        }
+                    })
+                }else{
+                    res.send({message: 'No se encontró la empresa'})
+                }
+            })
+        }else{
+            res.send({message: 'Por favor ingrese la contraseña'})
+        }
+    }else{
+        res.send({message:'Ingrese el nombre de usuario o correo'});  
+    }
+
+}
+
+function pruebaMiddleWare(req, res){
+    var enterprise = req.enterprise;
+    res.send({message: 'Middleware funcionando', req: enterprise})
+}
+
 module.exports ={
     saveUser,
     updateRole,
