@@ -1,6 +1,6 @@
 'use strict'
 
 exports.Rol = Object.freeze({
-    Admin: 'admin',
-    Client: 'client'
+    Admin: 'ADMIN',
+    Client: 'CLIENT'
 })
