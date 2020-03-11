@@ -10,11 +10,12 @@ var cartSchema = Schema({
         required: true
     },
     products: [{
-        proct_id: Schema.Types.ObjectId,
-        name: String,
+        product: {type: Schema.Types.ObjectId, ref: 'product'},
         price: Number,
         quantity: Number
-    }]
+    }],
+    total: {type: Number, default: 0}
+
 })
 
 module.exports = mongoose.model('cart', cartSchema)

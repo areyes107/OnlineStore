@@ -7,8 +7,9 @@ var productSchema = Schema({
     name: String, 
     price: Number,
     quantity: Number,
-    categories: [{
-        name: String}]
+    sales: {type: Number, default: 0},
+    category: {
+        type: Schema.Types.ObjectId, ref: 'category'}
 })
 
 module.exports = mongoose.model('product', productSchema)

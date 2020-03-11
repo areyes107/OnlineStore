@@ -7,10 +7,8 @@ const autoIncrement = require('mongoose-auto-increment')
 var billSchema = Schemma ({
 
     billNumber: Number,
-    address: String,
-    date: Date, 
-    name: String,
-    total: [],
+    date: Date,
+    total: Number,
     user: [{
         type: Schemma.Types.ObjectId,
         ref: 'user', 

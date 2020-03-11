@@ -1,12 +1,15 @@
 'use strict'
 
 var Product = require ('../models/product.model');
+var Category = require('../models/category.model');
+var Util = require('../util/defaultCategory');
 
 function saveProduct (req, res){
     var params = req.body;
     var product = new Product();
+    var category = new Category();
 
-    if(params.name && params.price && params.quantity){
+    if(params.name && params.price && params.quantity && params.category){
         Product.findOne({name: params.name}, (err, productFind)=>{
             if(err){
                 res.status(500).send({message: 'Error en el servidor'});
@@ -16,6 +19,15 @@ function saveProduct (req, res){
                 product.name = params.name;
                 product.price = params.price;
                 product.quantity = params.quantity;
+                Category.findOne({name: params.category}, (err, categoryFind)=>{
+                    if(err){
+                        res.status(500).send({message: 'Error en el servidor'});
+                    }else if(categoryFind){
+                        product.category = categoryFind._id;
+                    }else{
+                        product.category = Util.getDefaultCategory()._id;
+                    }
+                })
                 product.save ((err, productSaved)=>{
                     if(err){
                         res.status(500).send({message: 'Error en el servidor'});

@@ -14,7 +14,7 @@ var userSchema = Schema({
     role: {type: String, 
         enum: Object.values(Rol), 
         default: Rol.Client},
-    bills: []
+    cart: {type: Schema.Types.ObjectId, ref: 'cart'}
 })
 
 module.exports = mongoose.model('user', userSchema)

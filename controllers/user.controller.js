@@ -3,10 +3,12 @@
 var User = require('../models/user.model');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require ('../services/jwt');
+var Cart = require('../models/cart.model');
 
 function saveUser (req, res){
     var params = req.body;
     var user = new User();
+    var cart = new Cart();
 
     if(params.name && 
         params.username &&
@@ -34,7 +36,16 @@ function saveUser (req, res){
                                 if(err){
                                     res.status(500).send({message: 'Error en el servidor'});
                                 }else if(userSaved){
-                                    res.send({user: userSaved});
+                                    cart.save((err, cartSaved)=>{
+                                        cart.user = userSaved._id;
+                                        if(err){
+                                            res.status(500).send({message: 'Error en el servidor'});
+                                        }else if(cartSaved){
+                                            res.send({cartSaved, userSaved});
+                                        }else{  
+                                            res.send({message: 'No se pudo guardar el carrito'});
+                                        }   
+                                    })
                                 }else{
                                     res.status(418).send({message: 'Usuario no guardado'});
         
@@ -114,21 +125,21 @@ function login (req, res){
 
     if(params.username || params.email){
         if(params.password){
-            Enterprise.findOne({$or:[{username: params.username},{email: params.email}]} , (err, enterpriseFind)=>{
+            User.findOne({$or:[{username: params.username},{email: params.email}]} , (err, userFind)=>{
                 if(err){
                     res.status(500).send({message: 'Error en el servidor'});
 
-                }else if(enterpriseFind){
-                    bcrypt.compare(params.password, enterpriseFind.password, (err, checkPassword)=>{
+                }else if(userFind){
+                    bcrypt.compare(params.password, userFind.password, (err, checkPassword)=>{
                         if(err){
                             res.status(500).send({message: ' error al comparar las contraseñas'});
 
                         }else if(checkPassword){
                             if(params.gettoken){
-                               res.send({token: jwt.createToken(enterpriseFind)});
+                               res.send({token: jwt.createToken(userFind)});
                             }
                             else{
-                                res.send({enterprise: enterpriseFind});
+                                res.send({user: userFind});
                             }
 
                         }else{
@@ -136,7 +147,7 @@ function login (req, res){
                         }
                     })
                 }else{
-                    res.send({message: 'No se encontró la empresa'})
+                    res.send({message: 'No se encontró el usuario'})
                 }
             })
         }else{
@@ -149,13 +160,15 @@ function login (req, res){
 }
 
 function pruebaMiddleWare(req, res){
-    var enterprise = req.enterprise;
-    res.send({message: 'Middleware funcionando', req: enterprise})
+    var user = req.user;
+    res.send({message: 'Middleware funcionando', req: user})
 }
 
 module.exports ={
     saveUser,
     updateRole,
     updateClient,
-    deleteClient
+    deleteClient,
+    login,
+    pruebaMiddleWare
 }

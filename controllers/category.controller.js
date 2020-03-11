@@ -1,6 +1,8 @@
 'use strict'
 
 var Category = require('../models/category.model');
+const Product = require('../models/product.model');
+const Util = require('../util/defaultCategory');
 
 function saveCategory (req, res){
     var params = req.body;
@@ -69,15 +71,33 @@ function updateCategorie(req, res){
 function deleteCategory(req, res){
     var categoryId = req.params.id;
 
-    Category.findByIdAndDelete(categoryId, (err, categoryDeleted)=>{
+    Category.findById(categoryId, (err, categoryFind)=>{
         if(err){
             res.status(500).send({message: 'Error en el servidor'});
-        }else if(categoryDeleted){
-            res.send({message: 'Categoria eliminada correctamente', categoryDeleted})
+        }else if(categoryFind){
+            Product.updateMany({"category._id": categoryId}, {$set: {category: Util.getDefaultCategory()._id}},
+                                {new: true}, (err, setDefault)=>{
+                                    if(err){
+                                        res.status(500).send({message: 'Error en el servidor'});
+                                    }else if(setDefault){
+                                        Category.findByIdAndDelete(categoryId, (err, categoryDeleted)=>{
+                                            if(err){
+                                                res.status(500).send({message: 'Error en el servidor'});
+                                            }else if(categoryDeleted){
+                                                res.send({message: 'Categoria eliminada correctamente', categoryDeleted});
+                                            }else{
+                                                res.status(404).send({message: 'No se pudo borrar la categoria'});
+                                            }
+                                        })
+                                    }else{
+                                        res.status(404).send({message: 'No se pudo pasar a la categoria por defecto'});
+                                    }
+                                });
         }else{
-            res.status(404).send({message: 'No se pudo borrar la categoria'});
+            res.status(404).send({message: 'No se pudo encontrar la categoria'});
         }
     })
+    
 }
 
 module.exports = {
