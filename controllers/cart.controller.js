@@ -9,9 +9,9 @@ async function addToCart (req, res){
     let params = req.body;
     let quantity = 1;
 
-    if(params.product && params.quantity){
+    if(params.name && params.quantity){
         try {
-            let cartFind = await Cart.findOne({user: id});
+            let cartFind = await Cart.findOne({cart: id});
             if(!cartFind) res.send({message: 'Error de login'});
             else{
                 let productFind = await Product.findOne({name: params.name});
@@ -43,7 +43,7 @@ async function listCart(req, res){
     let id = req.params.id;
 
     try {
-        let cartFind = await Cart.findOne({user: id}.populate('products.product'));
+        let cartFind = await Cart.findOne({cart: id}.populate('products.product'));
         if(!cartFind) res.status(403).send({message: 'Error de autenticacion'});
         else if(cartFind) {
             res.send({message: 'No tiene productos agregados al carrito'});
