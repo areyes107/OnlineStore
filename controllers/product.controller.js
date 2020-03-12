@@ -117,10 +117,25 @@ function deleteProduct(req, res){
     })
 }
 
+function searchProduct (req, res){
+    var params = req.body;
+
+    Product.findOne({$or:[{'name': {$regex: text, $options: 'i'}}]}, (err, productFind)=>{
+        if(err){
+            res.status(500).send({message: 'Error en el servidor'});
+        }else if(productFind){
+            res.send({producto: productFind})
+        }else{
+            res.status(404).send({message: 'No se encontró el producto'});
+        }
+    })
+}
+
 module.exports = {
     saveProduct,
     listProducts,
     stockProducts,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    searchProduct
 }
