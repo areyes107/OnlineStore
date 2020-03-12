@@ -53,19 +53,20 @@ async function createBill (req, res){
     }
 }
 
-function showBill (req, res){
-    var billId = req.params.id;
 
-    Bill.findById(billId, (err, billFind)=>{
-        if(err){
-            res.status(500).send({message: 'Error en el servidor'});
-        }else if(billFind){
-            res.send({billFind});
-        }else{
-            res.send({message: 'No se pudo encontrar la factura'});
+async function showBill(req,res){
+    let id = req.params.id;
+    try{
+        let bills = await Bill.find({user:id}).populate('user products.product');
+        if(!bills) res.send({message:'No hay ninguna factura agregada'});
+        else{
+            res.send(bills);
         }
-    }).populate('user products.product')
+    }catch(err){
+        res.status(500).send('Error en el servidor');
+    }
 }
+
 
 
 

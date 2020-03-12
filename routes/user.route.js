@@ -7,7 +7,7 @@ var api = express();
 var middlewareAuth = require('../middlewares/authenticated');
 
 api.post('/saveUser', userController.saveUser);
-api.put('/updateRole/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
+api.put('/updateRole/:id',  middlewareAuth.ensureAuthAdmin, userController.updateRole);
 api.put('/updateClient/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
 api.delete('/deleteClient/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
 api.get('/listUsers', middlewareAuth.ensureAuthClient, userController.listUsers);
