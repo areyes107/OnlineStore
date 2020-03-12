@@ -19,15 +19,7 @@ function saveProduct (req, res){
                 product.name = params.name;
                 product.price = params.price;
                 product.quantity = params.quantity;
-                Category.findOne({name: params.category}, (err, categoryFind)=>{
-                    if(err){
-                        res.status(500).send({message: 'Error en el servidor'});
-                    }else if(categoryFind){
-                        product.category = categoryFind._id;
-                    }else{
-                        product.category = Util.getDefaultCategory()._id;
-                    }
-                })
+
                 product.save ((err, productSaved)=>{
                     if(err){
                         res.status(500).send({message: 'Error en el servidor'});
@@ -36,7 +28,19 @@ function saveProduct (req, res){
                     }else{
                         res.status(404).send({message: 'No se pudo agregar el producto'});
                     }
-                })
+                }).populate('category')
+
+                Category.findOne({name: params.category}, (err, categoryFind)=>{
+                    if(err){
+                        res.status(500).send({message: 'Error en el servidor'});
+                    }else if(categoryFind){
+                        product.category = categoryFind._id;
+                    }else{
+                        product.category = Util.getDefaultCategory()._id;
+                    }
+                }).populate('category')
+
+                
             }
         })
     }else{
@@ -44,16 +48,23 @@ function saveProduct (req, res){
     }
 }
 
-function listProducts (req, res){
-    Product.find({}, (err, productFind)=>{
-        if(err){
-             res.status(500).send({message: 'Error en el servidor'});
-        }else if(productFind){
-            res.send({products: productFind});
-        }else{
-            res.status(404).send({message: 'No se encontró ningún producto'});
+
+async function listProducts(req,res){
+    try {
+        let productFind = await Product.find().populate('category');
+
+        if(!productFind) res.send({message:'No se pudo obtener productos'});
+        else{
+            if(productFind.length == 0) res.send({message:'No hay productos disponibles'});
+            else{
+                res.send({producto: productFind});
+            }
         }
-    })
+
+    }catch(err){
+        res.status(500).send('Error interno del servidor');
+        console.log(err);
+    }
 }
 
 function stockProducts(req, res){
