@@ -10,6 +10,7 @@ api.post('/saveUser', userController.saveUser);
 api.put('/updateRole/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
 api.put('/updateClient/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
 api.delete('/deleteClient/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
+api.get('/listUsers', middlewareAuth.ensureAuthClient, userController.listUsers);
 
 
 api.get ('/login', userController.login);
@@ -17,6 +18,6 @@ api.get('/pruebaMiddleware', middlewareAuth.ensureAuthClient, userController.pru
 
 //carrito de compras
 api.put('/addToCart/:id', middlewareAuth.ensureAuthClient, cartController.addToCart);
-api.get('/listCart', middlewareAuth.ensureAuthAdmin, cartController.listCart);
+api.get('/listCart/:id', middlewareAuth.ensureAuthAdmin, cartController.listCart);
 
 module.exports = api;
