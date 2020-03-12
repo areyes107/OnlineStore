@@ -19,19 +19,20 @@ async function createBill (req, res){
             bill.products = cartFind.products;
             bill.total = cartFind.total;
 
-            let billSaved = await bill.save();
-
+            let billSaved =( await bill.save()).populate('users.user');
             if(!billSaved) res.send({message: 'No se pudo realizar la compra'});
 
             else{
                 for await(let compra of billSaved.products){
+
                     for await(let producto of Product.find()){
+
                         if(compra.product.equals(producto._id)){
                             let discount = parseInt(compra.quantity);
                             let stock = parseInt(producto.quantity);
                             let descuento = stock - discount; 
                              
-                            await Product.findByIdAndUpdate(producto._id, {$set: {quantity: descuento}, $inc: {sales: discount}})
+                            await Product.findByIdAndUpdate(producto._id, {$set: {quantity: descuento}, $inc: {sales: descuento}})
                         }
                     }
                 }
