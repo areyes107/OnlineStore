@@ -20,27 +20,25 @@ function saveProduct (req, res){
                 product.price = params.price;
                 product.quantity = params.quantity;
 
-                product.save ((err, productSaved)=>{
-                    if(err){
-                        res.status(500).send({message: 'Error en el servidor'});
-                    }else if(productSaved){
-                        res.send({product: productSaved});
-                    }else{
-                        res.status(404).send({message: 'No se pudo agregar el producto'});
-                    }
-                })
-
                 Category.findOne({name: params.category}, (err, categoryFind)=>{
                     if(err){
                         res.status(500).send({message: 'Error en el servidor'});
                     }else if(categoryFind){
                         product.category = categoryFind._id;
+
+                        product.save((err, productSaved)=>{
+                            if(err){
+                                res.status(500).send({message: 'Error en el servidor'});
+                            }else if(productSaved){ 
+                                res.send({product: productSaved});
+                            }else{
+                                res.status(404).send({message: 'No se pudo agregar el producto'});
+                            }
+                        })
                     }else{
                         product.category = Util.getDefaultCategory()._id;
                     }
                 })
-
-                
             }
         })
     }else{
@@ -51,7 +49,7 @@ function saveProduct (req, res){
 
 async function listProducts(req,res){
     try {
-        let productFind = await Product.find().populate('category');
+        let productFind = await Product.find({}).populate('category');
 
         if(!productFind) res.send({message:'No se pudo obtener productos'});
         else{
