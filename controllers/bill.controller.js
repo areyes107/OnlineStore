@@ -19,7 +19,7 @@ async function createBill (req, res){
             bill.products = cartFind.products;
             bill.total = cartFind.total;
 
-            let billSaved =( await bill.save()).populate('users.user');
+            let billSaved =( await bill.save()).populate('user');
             if(!billSaved) res.send({message: 'No se pudo realizar la compra'});
 
             else{
@@ -27,7 +27,7 @@ async function createBill (req, res){
 
                     for await(let producto of Product.find()){
 
-                        if(compra.product.equals(producto._id)){
+                        if(compra.product == producto._id){
                             let discount = parseInt(compra.quantity);
                             let stock = parseInt(producto.quantity);
                             let descuento = stock - discount; 
@@ -40,7 +40,7 @@ async function createBill (req, res){
             let cleanCart = await Cart.findByIdAndUpdate(cartFind._id, {$set: {productos:[], total: 0}});
             if (!cleanCart) res.send({message: 'No se pudo limpiar el carrito'});
             else{
-                let detalleFactura = await Bill.findById(billSaved._id);
+                let detalleFactura = await Bill.findById(billSaved.id).populate('products.product');
                 if(!detalleFactura) res.send({billSaved});
                 else{
                     res.send({detalleFactura});
@@ -64,7 +64,7 @@ function showBill (req, res){
         }else{
             res.send({message: 'No se pudo encontrar la factura'});
         }
-    })
+    }).populate('user products.product')
 }
 
 
