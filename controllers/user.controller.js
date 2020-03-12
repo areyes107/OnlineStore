@@ -30,29 +30,17 @@ function saveUser (req, res){
                         if(err){
                             res.status(500).send({message: 'Error de encriptación'});
                         }else{ 
-
                             user.password = hashPassword;
                             user.save((err, userSaved)=>{
                                 if(err){
                                     res.status(500).send({message: 'Error en el servidor'});
                                 }else if(userSaved){
+                                    cart.user = userSaved.id;
                                     cart.save((err, cartSaved)=>{
-                                        cart.user = userSaved.id;
                                         if(err){
                                             res.status(500).send({message: 'Error en el servidor'});
                                         }else if(cartSaved){
-
-                                            cart.user = userSaved.id;
-                                            cart.save((err, cartSaved)=>{
-                                                if(err){
-                                                    res.status(500).send({message: 'Error en el servidor'});
-                                                }else if(cartSaved){
-                                                    res.send({cartSaved});
-                                                    res.send({userSaved});
-                                                }else{
-                                                    res.send({message: 'No se pudo crear el carrito'});
-                                                }
-                                            })
+                                            res.send({cartSaved, userSaved});
                                         }else{  
                                             res.send({message: 'No se pudo guardar el carrito'});
                                         }   
