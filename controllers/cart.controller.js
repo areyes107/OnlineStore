@@ -2,17 +2,20 @@
 
 const Cart = require('../models/cart.model');
 const Product = require('../models/product.model');
+const User = require('../models/user.model');
 
 
 async function addToCart (req, res){
     let id = req.params.id;
-    let params = req.body;
+    var params = req.body;
     let quantity = 1;
 
     if(params.name && params.quantity){
         try {
+            
+
             let cartFind = await Cart.findOne({user: id});
-            if(!cartFind) res.send({message: 'Error de login'});
+            if(!cartFind) res.send({message: 'Error de login'}), console.log();
             else{
                 let productFind = await Product.findOne({name: params.name});
                 if(!productFind) res.send({message: 'Producto no existe'});
@@ -24,7 +27,7 @@ async function addToCart (req, res){
                             price: productFind.price,
                         }} });
                         let total = parseInt(cartFind.total) + (parseInt(productFind.price)*parseInt(params.quantity));
-                        let totalFinal = await Cart.findByIdAndUpdate(cartFind._id, {$set: {total: totalFinal}});
+                        let totalFinal = await Cart.findByIdAndUpdate(cartFind._id, {$set: {total: total}});
                         if(!productAdd) res.send({message: 'No se agregó el producto'});
                         else{
                             res.send({message: 'Producto añadido'});
@@ -43,32 +46,19 @@ async function listCart(req, res){
     let cartId = req.params.id;
 
     try {
-        let cartFind = await Cart.findOne({user: cartId});
-        if(cartFind) res.status(403).send({message: 'Error de autenticacion'});
-        else if(!cartFind) {
-            res.send({message: 'No tiene productos agregados al carrito'});
+        let cartFind = await Cart.findOne({user: cartId}).populate('products.product');
+        if(!cartFind) res.status(403).send({message: 'Error de autenticacion'});
+        else if(cartFind) {
+            res.send({cartFind});
         }
         else{
-            res.send({cartFind});
+            res.send({message: 'No tiene productos agregados al carrito'});
         }
     } catch (err) {
         res.status(500).send({message: 'Error en el servidor'});
+        console.log(err);
     }
 }
-
-/*function listCart (req, res){
-    var cartId = req.params.id;
-
-    Cart.findOne({cartId}, (err, cartFind)=>{
-        if(err){
-            res.status(500).send({message: 'Error en el servidor'});
-        }else if(cartFind){
-            res.send({cartFind});
-        }else{
-            res.send({message: 'No tiene productos agregados al carrito'});
-        }
-    })
-}*/
 
 module.exports = {
     addToCart, 
