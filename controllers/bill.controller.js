@@ -64,6 +64,7 @@ async function showBill(req,res){
         }
     }catch(err){
         res.status(500).send('Error en el servidor');
+        console.log(err);
     }
 }
 
