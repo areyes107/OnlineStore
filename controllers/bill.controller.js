@@ -1,7 +1,6 @@
 'use strict'
 
 var Bill = require('../models/bill.model');
-var jwt = require('../services/jwt');
 var User = require('../models/user.model');
 const Cart = require('../models/cart.model');
 const Product = require ('../models/product.model');
@@ -12,7 +11,7 @@ async function createBill (req, res){
 
     try {
         let cartFind = await Cart.findOne({user: id});
-        if(!cartFind) res.send({message: 'Error al obtener el product'});
+        if(!cartFind) res.send({message: 'Error al obtener el producto'});
         else if (cartFind.products.length == 0) res.send({message: 'No tiene productos agregados en el carrito'});
         else{
             bill.user = id;
@@ -20,7 +19,7 @@ async function createBill (req, res){
             bill.products = cartFind.products;
             bill.total = cartFind.total;
 
-            let billSaved = await Bill.save();
+            let billSaved = await bill.save();
 
             if(!billSaved) res.send({message: 'No se pudo realizar la compra'});
 
@@ -49,6 +48,7 @@ async function createBill (req, res){
         }
     } catch (err) {
         res.status(500).send({message: 'Error en el servidor'});
+        console.log(err);
     }
 }
 
@@ -66,6 +66,9 @@ function showBill (req, res){
     })
 }
 
+
+
 module.exports = {
-    createBill
+    createBill,
+    showBill
 }
