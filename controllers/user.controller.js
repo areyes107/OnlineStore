@@ -37,11 +37,22 @@ function saveUser (req, res){
                                     res.status(500).send({message: 'Error en el servidor'});
                                 }else if(userSaved){
                                     cart.save((err, cartSaved)=>{
-                                        cart.user = userSaved._id;
+                                        cart.user = userSaved.id;
                                         if(err){
                                             res.status(500).send({message: 'Error en el servidor'});
                                         }else if(cartSaved){
-                                            res.send({cartSaved, userSaved});
+
+                                            cart.user = userSaved.id;
+                                            cart.save((err, cartSaved)=>{
+                                                if(err){
+                                                    res.status(500).send({message: 'Error en el servidor'});
+                                                }else if(cartSaved){
+                                                    res.send({cartSaved});
+                                                    res.send({userSaved});
+                                                }else{
+                                                    res.send({message: 'No se pudo crear el carrito'});
+                                                }
+                                            })
                                         }else{  
                                             res.send({message: 'No se pudo guardar el carrito'});
                                         }   
@@ -164,11 +175,26 @@ function pruebaMiddleWare(req, res){
     res.send({message: 'Middleware funcionando', req: user})
 }
 
+function listUsers (req, res){
+    var userId = req.params.id;
+
+    User.find({}, (err, userFind)=>{
+        if(err){
+            res.status(500).send({message: 'Error en el servidor'});
+        }else if(userFind){
+                res.send({userFind});
+        }else{
+            res.status(418).send({message: 'Admin no actualizado'});
+        }
+    })
+}
+
 module.exports ={
     saveUser,
     updateRole,
     updateClient,
     deleteClient,
     login,
-    pruebaMiddleWare
+    pruebaMiddleWare,
+    listUsers
 }
