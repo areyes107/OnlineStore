@@ -10,7 +10,7 @@ api.put('/updateProduct/:id', ensureAuth.ensureAuthAdmin,productController.updat
 api.delete('/deleteProduct/:id', ensureAuth.ensureAuthAdmin,productController.deleteProduct);
 api.get('/listProducts',productController.listProducts);
 api.get('/stockProducts/:id', productController.stockProducts);
-api.get('/searchProduct', productController.stockProducts);
+api.get('/searchProduct', productController.searchProduct);
 
 
 module.exports = api;

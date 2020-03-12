@@ -8,13 +8,13 @@ var middlewareAuth = require('../middlewares/authenticated');
 
 api.post('/saveUser', userController.saveUser);
 api.put('/updateRole/:id',  middlewareAuth.ensureAuthAdmin, userController.updateRole);
-api.put('/updateClient/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
-api.delete('/deleteClient/:id',  middlewareAuth.ensureAuthClient, userController.updateRole);
-api.get('/listUsers', middlewareAuth.ensureAuthClient, userController.listUsers);
+api.put('/updateClient/:id',  middlewareAuth.ensureAuthAdmin, userController.updateRole);
+api.delete('/deleteClient/:id',  middlewareAuth.ensureAuthAdmin, userController.updateRole);
+api.get('/listUsers', userController.listUsers);
 
 
 api.get ('/login', userController.login);
-api.get('/pruebaMiddleware', middlewareAuth.ensureAuthClient, userController.pruebaMiddleWare);
+api.get('/pruebaMiddleware', middlewareAuth.ensureAuthClient,  userController.pruebaMiddleWare);
 
 //carrito de compras
 api.put('/addToCart/:id', middlewareAuth.ensureAuthClient, cartController.addToCart);
