@@ -18,6 +18,6 @@ api.get('/pruebaMiddleware', middlewareAuth.ensureAuthClient, userController.pru
 
 //carrito de compras
 api.put('/addToCart/:id', middlewareAuth.ensureAuthClient, cartController.addToCart);
-api.get('/listCart/:id', middlewareAuth.ensureAuthAdmin, cartController.listCart);
+api.get('/listCart/:id', middlewareAuth.ensureAuthClient, cartController.listCart);
 
 module.exports = api;
