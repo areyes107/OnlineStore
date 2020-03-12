@@ -28,7 +28,7 @@ function saveProduct (req, res){
                     }else{
                         res.status(404).send({message: 'No se pudo agregar el producto'});
                     }
-                }).populate('category')
+                })
 
                 Category.findOne({name: params.category}, (err, categoryFind)=>{
                     if(err){
@@ -38,7 +38,7 @@ function saveProduct (req, res){
                     }else{
                         product.category = Util.getDefaultCategory()._id;
                     }
-                }).populate('category')
+                })
 
                 
             }
