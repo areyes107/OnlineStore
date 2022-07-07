@@ -16,7 +16,7 @@
     "express": "^4.17.1",
     "install": "^0.13.0",
     "jwt-simple": "^0.5.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.28",
     "mongoose": "^5.9.3",
     "mongoose-auto-increment": "^5.0.1",
